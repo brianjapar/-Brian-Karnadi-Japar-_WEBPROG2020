@@ -11,7 +11,12 @@ class Item extends Model
     ];
 
 
-    public function user(){
-        return $this->belongsTo(User::class,'user_id');
+    public function orders(){
+        return $this->belongsTo(Order::class,'cart_id');
+    }
+
+    public function transactions()
+    {
+        return $this->belongsTo(Transaction::class,'transaction_id');
     }
 }

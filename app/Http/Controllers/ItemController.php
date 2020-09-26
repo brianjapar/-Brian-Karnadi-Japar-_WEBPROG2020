@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Item;
+use App\Order;
+use App\OrderItem;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +43,8 @@ class ItemController extends Controller
     }
 
     public function show(Request $request){
-        $items = Item::all();
+        // $items = Item::all();
+        $items = Item::paginate(5);
         $user=Auth::user();
         return view('show',compact('items'));
     }
@@ -94,4 +97,46 @@ class ItemController extends Controller
 
          return redirect()->back();
      }
+
+     public function addToCart($itemId){
+        // dd(auth()->user());
+         $currCart = Order::where('user_id',auth()->user()->id)
+         ->where('status','ACTIVE')->first();
+         $item=Item::find($itemId);
+         if($currCart==NULL){
+             $curr= Order::create([
+                'user_id' => auth()->user()->id,
+                'status' => 'ACTIVE'
+             ]);
+         }
+         $newOrderItem = OrderItem::create([
+            'order_id' => $currCart->id,
+            'item_id' => $item->id,
+            'price' => $item->harga_barang
+         ]);
+
+         return redirect('/item/show')->with('success','Item Add to Cart');
+
+     }
+
+     public function showCart(Request $request){
+        $items = Item::paginate(5);
+        $user=Auth::user();
+        return view('cart',compact('items'));
+    }
+
+     function checkout(){
+        $currCart = Order::where('user_id',auth()->user()->id)
+        ->where('status','ACTIVE')->first();
+        if($currCart==NULL){
+            return redirect('/item/show')->with('error','Failed Checkout Cart');
+        }
+        $currCart->status = 'WAITING_PAYMENT';
+        $currCart->save();
+        return redirect('/item/show')->with('success','Item Add to Cart');
+    }
+
+
+
+
 }
