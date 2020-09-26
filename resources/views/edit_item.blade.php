@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <label>Foto Barang</label>
                     <p><input type="file" name="foto_barang">
-                        <img class="w-25 h-25" src="{{asset('storage/'.$items->foto_gambar)}}" alt="image">
+                        <img class="w-25 h-25" src="{{asset('storage/'.$items->foto_barang)}}" alt="image">
                     </p>
 
                 </div>

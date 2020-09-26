@@ -64,11 +64,11 @@ class ItemController extends Controller
 
          ]);
          if($validator->fails()){
-             return redirect('/show');
+             return redirect('/item/show');
          }
 
          $item = Item::find($id);
-         Storage::delete($item->file);
+         Storage::delete($item->foto_barang);
 
          $item->kategori_barang = $request->kategori_barang;
          $item->nama_barang = $request->nama_barang;
@@ -76,20 +76,20 @@ class ItemController extends Controller
          $item->jumlah_barang = $request->jumlah_barang;
          if($request->has('foto_barang')){
              $path=$request->file('foto_barang')->store('image_assets');
-             $item->file=$path;
+             $item->foto_barang=$path;
          }else{
              $path=$item->path;
          }
 
 
          $item->save();
-         return redirect('/show')->with('success','Data Item Berhasil diUbah');
+         return redirect('/item/show')->with('success','Data Item Berhasil diUbah');
      }
 
 
      public function delete($id){
          $item = Item::find($id);
-         Storage::delete($item->file);
+         Storage::delete($item->foto_barang);
          $item->delete();
 
          return redirect()->back();

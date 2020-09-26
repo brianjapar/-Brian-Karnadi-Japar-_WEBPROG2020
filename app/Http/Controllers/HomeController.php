@@ -2,13 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Item;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-  public function index(){
-      $data_item = Item::all();
-      return view('home',compact('data_item'));
-  }
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function index()
+    {
+        return view('home');
+    }
 }

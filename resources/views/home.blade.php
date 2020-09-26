@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Page1')
+@section('title','CreateItem')
 @section('content')
     @if (Session::has('msg'))
     <div class="alert alert-danger">
@@ -58,3 +58,4 @@
         </div>
 
 @endsection
+
