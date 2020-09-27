@@ -12,7 +12,7 @@ class OrderItem extends Model
 
     public function item()
     {
-        return $this->hasOne(Item::class);
+        return $this->hasOne(Item::class,'id');
     }
 
 
@@ -20,4 +20,5 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Order::class,'order_id');
     }
+
 }

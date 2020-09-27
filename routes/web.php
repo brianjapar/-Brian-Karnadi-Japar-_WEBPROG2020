@@ -12,9 +12,17 @@ Route::get('/item/edit/{id}','ItemController@edit')->name('editItem');
 Route::patch('/item/update/{id}', 'ItemController@update')->name('updateItem');
 Route::get('/item/delete/{id}', 'ItemController@delete')->name('deleteItem');
 Route::get('/item/addToCart/{id}','ItemController@addToCart')->name('addCart');
-Route::get('/item/checkout','ItemController@checkout')->name('checkoutItem');
 Route::get('/item/cart','ItemController@showCart')->name('showCart');
+Route::get('/item/checkout','ItemController@checkout')->name('checkoutItem');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+// Route::get('/clear-cache', function() {
+// 	$exitCode = Artisan::call('cache:clear');
+// 	$exitCode = Artisan::call('view:clear');
+// 	$exitCode = Artisan::call('route:clear');
+// 	$exitCode = Artisan::call('config:clear');
+// 	return 'Cache has been cleared!';
+// });

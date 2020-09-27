@@ -130,6 +130,8 @@ class ItemController extends Controller
         return view('/cart',compact('cartItems'));
     }
 
+    
+
      function checkout(){
         $currCart = Order::where('user_id',auth()->user()->id)
         ->where('status','ACTIVE')->first();
