@@ -120,9 +120,14 @@ class ItemController extends Controller
      }
 
      public function showCart(Request $request){
-        $items = Item::paginate(5);
-        $user=Auth::user();
-        return view('cart',compact('items'));
+        $currCart = Order::where('user_id',auth()->user()->id)
+        ->where('status','ACTIVE')->first();
+        if($currCart==NULL){
+            return redirect('/item/cart')->with('error','Failed Checkout Cart');
+        }
+        $cartItems = $currCart->orderItems;
+
+        return view('/cart',compact('cartItems'));
     }
 
      function checkout(){

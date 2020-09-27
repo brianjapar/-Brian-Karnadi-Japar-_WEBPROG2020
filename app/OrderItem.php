@@ -10,8 +10,14 @@ class OrderItem extends Model
         'order_id','item_id','price'
     ];
 
-    public function items()
+    public function item()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasOne(Item::class);
+    }
+
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class,'order_id');
     }
 }

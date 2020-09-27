@@ -11,12 +11,8 @@ class Item extends Model
     ];
 
 
-    public function orders(){
-        return $this->belongsTo(Order::class,'cart_id');
+    public function orderItem(){
+        return $this->belongsTo(OrderItem::class,'order_item_id');
     }
 
-    public function transactions()
-    {
-        return $this->belongsTo(Transaction::class,'transaction_id');
-    }
 }
