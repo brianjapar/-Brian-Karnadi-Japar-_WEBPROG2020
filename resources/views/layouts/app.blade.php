@@ -24,7 +24,7 @@
                 </svg>
                 Home
                 </a>
-                <a class="navbar-brand" href="/item/show" >Show </a>
+                <a class="navbar-brand" href="/item/show" >Item </a>
 
                 <a href="/item/cart">
                     <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-cart" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

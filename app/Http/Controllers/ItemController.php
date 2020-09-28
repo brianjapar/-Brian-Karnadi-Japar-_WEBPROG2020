@@ -98,13 +98,20 @@ class ItemController extends Controller
          return redirect()->back();
      }
 
-     public function addToCart($itemId){
+     public function showData(Request $request,$id){
+        $items = Item::find($id);
+        $new_items=Item::all();
+
+        return view('/showData',compact('items','new_items'));
+    }
+
+     public function addToCart(Request $request, $itemId){
         // dd(auth()->user());
          $currCart = Order::where('user_id',auth()->user()->id)
          ->where('status','ACTIVE')->first();
          $item=Item::find($itemId);
          if($currCart==NULL){
-             $curr= Order::create([
+             $currCart= Order::create([
                 'user_id' => auth()->user()->id,
                 'status' => 'ACTIVE'
              ]);
@@ -112,12 +119,66 @@ class ItemController extends Controller
          $newOrderItem = OrderItem::create([
             'order_id' => $currCart->id,
             'item_id' => $item->id,
-            'price' => $item->harga_barang
+            'price' => $item->harga_barang,
+            'quantity' => $request->jumlah_barang
          ]);
 
+         $item->jumlah_barang -= $request->jumlah_barang;
+         $item->save();
          return redirect('/item/show')->with('success','Item Add to Cart');
-
      }
+
+     public function deleteCartItem($itemId) {
+         $orderItem = OrderItem::find($itemId);
+         if ($orderItem == NULL) return 'error';
+         $orderItem->delete();
+         return 'success';
+     }
+
+     public function checkout(Request $request) {
+         $currentCart = Order::where('user_id', auth()->user()->id)
+        ->where('status', 'ACTIVE')->first();
+
+        //  $validator = Validator::make($currentCart,[
+        //     'kode_pos' => 'required|string|min:5|max:5',
+        //     'alamat' => 'required|string|min:10|max:100',
+        //  ]);
+
+        if ($currentCart == NULL ) {
+            return redirect('/item/cart')->with('error', 'Failed Checkout Cart');
+        }
+
+        $totalPrice = 0;
+        foreach ($currentCart->orderItems as $cartItem) {
+            $totalPrice += $cartItem->jumlah_barang * $cartItem->harga_barang;
+        }
+
+        $currentCart->status        = 'SUCCESS';
+        $currentCart->alamat        = $request->alamat;
+        $currentCart->kode_pos      = $request->kode_pos;
+        $currentCart->total_price   = $totalPrice;
+        $currentCart->invoice_id    = $this->generateRandomString(10);
+        $currentCart->save();
+
+        return redirect('/item/checkout')->with('success','Item Berhasil di Checkout!');
+     }
+
+
+     public function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
+    public function showCheckout(Request $request){
+        $orders=Order::all();
+
+        return view('/checkout',compact('orders'));
+    }
 
      public function showCart(Request $request){
         $currCart = Order::where('user_id',auth()->user()->id)
@@ -126,24 +187,8 @@ class ItemController extends Controller
             return redirect('/item/cart')->with('error','Failed Checkout Cart');
         }
         $cartItems = $currCart->orderItems;
-
         return view('/cart',compact('cartItems'));
     }
-
-    
-
-     function checkout(){
-        $currCart = Order::where('user_id',auth()->user()->id)
-        ->where('status','ACTIVE')->first();
-        if($currCart==NULL){
-            return redirect('/item/show')->with('error','Failed Checkout Cart');
-        }
-        $currCart->status = 'WAITING_PAYMENT';
-        $currCart->save();
-        return redirect('/item/show')->with('success','Item Add to Cart');
-    }
-
-
 
 
 }

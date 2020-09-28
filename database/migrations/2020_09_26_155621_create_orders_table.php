@@ -17,6 +17,10 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('status');
+            $table->text('alamat')->default('');
+            $table->string('kode_pos')->default('');
+            $table->integer('total_price')->default(0);
+            $table->string('invoice_id')->default('');
             $table->timestamps();
         });
     }
