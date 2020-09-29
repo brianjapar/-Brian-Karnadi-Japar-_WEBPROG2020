@@ -31,7 +31,7 @@ class ItemController extends Controller
 
 
 
-        // auth()->user()->items()->
+
         Item::create([
             'kategori_barang'=> $request->kategori_barang,
             'nama_barang'=> $request->nama_barang,
@@ -43,7 +43,7 @@ class ItemController extends Controller
     }
 
     public function show(Request $request){
-        // $items = Item::all();
+
         $items = Item::paginate(5);
         $user=Auth::user();
         return view('show',compact('items'));
@@ -106,33 +106,41 @@ class ItemController extends Controller
     }
 
      public function addToCart(Request $request, $itemId){
-        // dd(auth()->user());
-         $currCart = Order::where('user_id',auth()->user()->id)
-         ->where('status','ACTIVE')->first();
-         $item=Item::find($itemId);
-         if($currCart==NULL){
-             $currCart= Order::create([
-                'user_id' => auth()->user()->id,
-                'status' => 'ACTIVE'
-             ]);
-         }
-         $newOrderItem = OrderItem::create([
-            'order_id' => $currCart->id,
-            'item_id' => $item->id,
-            'price' => $item->harga_barang,
-            'quantity' => $request->jumlah_barang
-         ]);
+        $currCart = Order::where('user_id',auth()->user()->id)
+        ->where('status','ACTIVE')->first();
+        $item=Item::find($itemId);
 
-         $item->jumlah_barang -= $request->jumlah_barang;
-         $item->save();
-         return redirect('/item/show')->with('success','Item Add to Cart');
+         if($item->jumlah_barang==0){
+            return redirect('/item/show')->with('error', 'Barang Sudah Habis, silahkan tunggu hingga barang di restock ulang!');
+         }else{
+
+            if($currCart==NULL){
+                $currCart= Order::create([
+                   'user_id' => auth()->user()->id,
+                   'status' => 'ACTIVE'
+                ]);
+            }
+            $newOrderItem = OrderItem::create([
+                'order_id' => $currCart->id,
+                'item_id' => $item->id,
+                'price' => $item->harga_barang,
+                'quantity' => $request->jumlah_barang
+             ]);
+
+             $item->jumlah_barang -= $request->jumlah_barang;
+             $item->save();
+             return redirect('/item/show')->with('success','Item Add to Cart');
+         }
+
      }
 
      public function deleteCartItem($itemId) {
          $orderItem = OrderItem::find($itemId);
-         if ($orderItem == NULL) return 'error';
+         if ($orderItem == NULL){
+            return redirect('/item/show')->with('error', 'Tidak Ada Barang!');
+         }
          $orderItem->delete();
-         return 'success';
+         return redirect('/item/show')->with('success','Success Delete Item in your Cart');
      }
 
      public function checkout(Request $request) {
@@ -150,7 +158,8 @@ class ItemController extends Controller
 
         $totalPrice = 0;
         foreach ($currentCart->orderItems as $cartItem) {
-            $totalPrice += $cartItem->jumlah_barang * $cartItem->harga_barang;
+            $totalPrice += $cartItem->quantity * $cartItem->price;
+
         }
 
         $currentCart->status        = 'SUCCESS';
@@ -184,11 +193,17 @@ class ItemController extends Controller
         $currCart = Order::where('user_id',auth()->user()->id)
         ->where('status','ACTIVE')->first();
         if($currCart==NULL){
-            return redirect('/item/cart')->with('error','Failed Checkout Cart');
+            return redirect('/item/show')->with('error','No Item in Cart!, Please Add item to Cart First');
         }
         $cartItems = $currCart->orderItems;
         return view('/cart',compact('cartItems'));
     }
 
-
+    public function homePage(Request $request){
+        $items=Item::all();
+        if ($items == NULL ) {
+            return redirect('/item/homepage')->with('error', 'There is no Items');
+        }
+        return view('/homepage',compact('items'));
+    }
 }

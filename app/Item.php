@@ -15,4 +15,7 @@ class Item extends Model
         return $this->belongsTo(OrderItem::class,'order_item_id');
     }
 
+    public function comments(){
+        return $this->morphMany(Comment::class,'commentable')->whereNull('parent_id');
+    }
 }

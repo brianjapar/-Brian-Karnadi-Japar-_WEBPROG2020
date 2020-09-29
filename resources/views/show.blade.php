@@ -54,7 +54,7 @@
                         <td><a href="{{ route('showDataItem',$item->id) }}">{{ $item->nama_barang }}</a></td>
                         <td>{{ $item->kategori_barang }}</td>
                         <td>
-                            <input type="number" name="jumlah_barang" value="{{ $item->jumlah_barang }}" size="3" min="1" max="{{ $item->jumlah_barang }}" onKeyUp="multiply()"/>
+                            <input type="number" name="jumlah_barang" value="{{ $item->jumlah_barang }}" size="3" min="0" max="{{ $item->jumlah_barang }}" onKeyUp="multiply()"/>
                         </td>
                         <td>Rp. {{ $item->harga_barang }}</td>
 

@@ -40,8 +40,8 @@
             @foreach ($cartItems as $order_item)
 
                 <tr>
-                    <td>{{ $order_item->item->nama_barang }}</td>
-                    <td>{{ $order_item->item->kategori_barang }}</td>
+                    <td>{{ $order_item->item['nama_barang'] }}</td>
+                    <td>{{ $order_item->item['kategori_barang'] }}</td>
                     <td>
                         {{ $order_item->quantity }}
                     </td>

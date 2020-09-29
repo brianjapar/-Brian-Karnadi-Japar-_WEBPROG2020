@@ -13,6 +13,31 @@
 
     <br><br>
 
+        <div class="container">
+            <br>
+
+
+            <h4>Display Comments</h4>
+
+            @include('comment.comment',['comments'=>$items->comments,'item_id'=>$items->id])
+            <br>
+
+            <h4>Add comment</h4>
+            <form method="POST" action="{{ route('storeComment') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="form-group">
+                    <input type="text" name="comment_body" class="form-control" />
+                    <input type="hidden" name="item_id" value="{{ $item->id }}" />
+
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-warning" value="Add Comment" />
+                </div>
+            </form>
+
+            <br>
+        </div>
 
 
 

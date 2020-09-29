@@ -39,7 +39,7 @@
                 <div class="form-group">
                     <label>Harga Barang</label>
                     <label >Rp</label>
-                    <input type="text" class="form-control"  placeholder="ex : Rp. 2000000" name="harga_barang">
+                    <input type="text" class="form-control"  placeholder="ex : 2000000" name="harga_barang">
                 </div>
 
                 <div class="form-group">
